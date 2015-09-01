@@ -1,0 +1,162 @@
+{COPYRIGH(C) 2015, KANGJIAN}
+
+DRAWTEXT_FIX(C>O,0.01,0.01,0, '(C)2015 长阳涨老'),COLORYELLOW;
+
+T0.支撑,NODRAW,COLORRED;
+T0.阻力,NODRAW,COLORGREEN;
+TODAY:IF(D=0,DATE,D),NODRAW,COLORWHITE;
+{超B:L2_AMO(0,2)/10000.0;
+大B:L2_AMO(1,2)/10000.0;
+中B:L2_AMO(2,2)/10000.0;
+小B:L2_AMO(3,2)/10000.0;
+超S:=L2_AMO(0,3)/10000.0;
+大S:=L2_AMO(1,3)/10000.0;
+中S:=L2_AMO(2,3)/10000.0;
+小S:=L2_AMO(3,3)/10000.0;
+主买A:=ACTINVOL,COLORRED,NODRAW;
+主卖A:=ACTOUTVOL,COLORGREEN,NODRAW;
+主买:=主买A*100/(主买A+主卖A),NODRAW,COLORRED;
+主卖:=主卖A*100/(主买A+主卖A),NODRAW,COLORGREEN;
+SAT:=(AMOUNT/C)/(HHV(AMOUNT,20)/HHV(C,20));
+【量能饱和】:=IF(SAT>1,1,SAT)*100,COLORYELLOW,NODRAW;
+主力净买量:=(LARGEINTRDVOL-LARGEOUTTRDVOL),COLORYELLOW,NODRAW;
+大宗净流入:=(超B+大B)-(超S+大S),COLORRED,NODRAW;
+主动买卖差:=(ACTINVOL-ACTOUTVOL),COLORMAGENTA,NODRAW;
+主力资金差:=((L2_AMO(0,0)+L2_AMO(1,0)-L2_AMO(0,1)-L2_AMO(1,1)))/10000,COLORCYAN,NODRAW;}
+{DRAWRECTREL(100,0,90+CONST(主买*300/100),40,RGB(230,65,0));
+DRAWRECTREL(100,60,90+CONST(主卖*300/100),100,RGB(0,104,0));
+DRAWRECTREL(100,120,390,160,RGB(0,0,100));
+DRAWRECTREL(100,120,90+CONST(【量能饱和】*300/100),160,RGB(250,104,0));}
+大单动向:=(LARGEINTRDVOL-LARGEOUTTRDVOL)*10000/FINANCE(7),NODRAW;
+T1:=IF (大单动向>0 AND REF(大单动向,1)<0,1,0);
+T2:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)<0,2,T1);
+T3:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)>0 AND REF(大单动向,3)<0,3,T2);
+T4:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)>0 AND REF(大单动向,3)>0 AND REF(大单动向,4)<0,4,T3);
+T5:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)>0 AND REF(大单动向,3)>0 AND REF(大单动向,4)>0 AND REF(大单动向,5)<0,5,T4);
+T6:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)>0 AND REF(大单动向,3)>0 AND REF(大单动向,4)>0 AND REF(大单动向,5)>0 AND REF(大单动向,6)<0,6,T5);
+T7:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)>0 AND REF(大单动向,3)>0 AND REF(大单动向,4)>0 AND REF(大单动向,5)>0 AND REF(大单动向,6)>0 AND REF(大单动向,7)<0,7,T6);
+T8:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)>0 AND REF(大单动向,3)>0 AND REF(大单动向,4)>0 AND REF(大单动向,5)>0 AND REF(大单动向,6)>0 AND REF(大单动向,7)>0 AND REF(大单动向,8)<0,8,T7);
+T9:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)>0 AND REF(大单动向,3)>0 AND REF(大单动向,4)>0 AND REF(大单动向,5)>0 AND REF(大单动向,6)>0 AND REF(大单动向,7)>0 AND REF(大单动向,8)>0 AND REF(大单动向,9)<0,9,T8);
+T:=IF (大单动向>0 AND REF(大单动向,1)>0 AND REF(大单动向,2)>0 AND REF(大单动向,3)>0 AND REF(大单动向,4)>0 AND REF(大单动向,5)>0 AND REF(大单动向,6)>0 AND REF(大单动向,7)>0 AND REF(大单动向,8)>0 AND REF(大单动向,9)>0,10,T9);
+D:=COUNT(大单动向>0,10),NODRAW;
+{DRAWTEXT_FIX(1,0.005,0.01,0,STRCAT(STRCAT('【主买比】: ',CON2STR(主买,1)),' ％ ')),COLORYELLOW;
+DRAWTEXT_FIX(1,0.005,0.07,0,STRCAT(STRCAT('【主卖比】: ',CON2STR(主卖,1)),' ％ ')),COLORGREEN;
+DRAWTEXT_FIX(1,0.005,0.13,0,STRCAT(STRCAT('【量能饱和】: ',CON2STR(【量能饱和】,1)),' ％ ')),COLORYELLOW;
+DRAWTEXT_FIX(1,0.005,0.19,0,STRCAT(STRCAT('【主力资金差】: ',CON2STR(主力资金差,1)),' 万元 ')),COLORYELLOW;
+DRAWTEXT_FIX(1,0.2,0.19,0,STRCAT(STRCAT('【大宗净流入】: ',CON2STR(大宗净流入,1)),' 万元 ')),COLORYELLOW;
+DRAWTEXT_FIX(1,0.005,0.25,0,STRCAT(STRCAT('【主力净买量】: ',CON2STR(主力净买量,1)),' 手')),COLORYELLOW;
+DRAWTEXT_FIX(1,0.2,0.25,0,STRCAT(STRCAT('【主动买卖差】: ',CON2STR(主动买卖差,1)),' 手')),COLORYELLOW;
+DRAWTEXT_FIX(1,0.005,0.31,0,STRCAT(STRCAT('【DDX 连 红 天 数】: ',CON2STR(T,0)),' 天 ')),COLORYELLOW;
+DRAWTEXT_FIX(1,0.2,0.31,0,STRCAT(STRCAT('【DDX两周红天数】: ',CON2STR(D,0)),' 天 ')),COLORYELLOW;
+}
+
+PJJ:=DMA((((HIGH + LOW) + (CLOSE * 2)) / 4),0.9);
+JJ:=REF(EMA(PJJ,3),1);
+QJJ:=(VOL / (((HIGH - LOW) * 2) - ABS((CLOSE - OPEN))));
+XVL:=(IF((CLOSE > OPEN),(QJJ * (HIGH - LOW)),IF((CLOSE < OPEN),(QJJ * ((HIGH - OPEN) + (CLOSE - LOW))),(VOL / 2))) + IF((CLOSE > OPEN),(0 - (QJJ * ((HIGH - CLOSE) + (OPEN - LOW)))),IF((CLOSE < OPEN),(0 - (QJJ * (HIGH - LOW))),(0 - (VOL / 2)))));
+ZLL:=(VOL / CAPITAL);
+HSL1:=IF((ZLL > 10),10,ZLL);
+HSL:=XVL/23;
+攻击流量:=(((HSL * 0.55) + (REF(HSL,1) * 0.33)) + (REF(HSL,2) * 0.22));
+GJJ:=EMA(攻击流量,8);
+LLJX:=EMA(攻击流量,3);
+{资金进出:=(HSL*0.4+LLJX),LINETHICK0;}
+资金进出:=LLJX;
+STICKLINE(((HSL * 0.4) >= 0),资金进出,0,3,0),COLORYELLOW;
+STICKLINE(((HSL * 0.4) < 0),资金进出,0,3,0),COLORGREEN;
+
+
+资金流入:=IF(资金进出>0,资金进出,DRAWNULL),COLORRED,NODRAW;
+资金流出:=IF(资金进出<0,资金进出,DRAWNULL),COLORGREEN,NODRAW;
+万元:=AMOUNT/10000{0000},VOLSTICK,COLORFF00FF;
+资金净进出:=IF(资金进出>0,资金流入,资金流出),COLORWHITE,POINTDOT;
+进出比例%:=IF(资金进出>0,资金流入/万元*100,资金流出/万元*100),COLORYELLOW;
+
+连红天1:=BARSLASTCOUNT(资金净进出>0),,COLORA20FFD,NODRAW;
+连红天2:=IF(连红天1=0,REF(连红天1,1),连红天1),,COLORA20FFD,NODRAW;
+连红天3:=IF(连红天2=0,REF(连红天1,2),连红天2),,COLORA20FFD,NODRAW;
+连红天4:=IF(连红天3=0,REF(连红天1,3),连红天3),,COLORA20FFD,NODRAW;
+近期连红天:=IF(连红天4=0,REF(连红天1,4),连红天4),,COLORYELLOW,NODRAW;
+最多连红天1:=MAX(REF(近期连红天,1),近期连红天),COLORYELLOW,NODRAW;
+最多连红天2:=MAX(最多连红天1,REF(近期连红天,2)),COLORYELLOW,NODRAW;
+最多连红天3:=MAX(最多连红天2,REF(近期连红天,3)),COLORYELLOW,NODRAW;
+最多连红天4:=MAX(最多连红天3,REF(近期连红天,4)),COLORYELLOW,NODRAW;
+最多连红天5:=MAX(最多连红天4,REF(近期连红天,5)),COLORYELLOW,NODRAW;
+最多连红天:=MAX(最多连红天5,REF(近期连红天,6)),COLORYELLOW,NODRAW;
+
+
+三日资金:=SUM(资金进出,3),COLORWHITE,NODRAW;
+五日资金:=SUM(资金进出,5),COLORFF00FF,NODRAW;
+十日资金:=SUM(资金进出,10),COLOR0000FF,NODRAW;
+
+资金流量:=LLJX,COLORWHITE,NODRAW;
+STICKLINE((资金流量 > 0),资金流量,0,1,0),COLORRED;
+STICKLINE((资金流量 < 0),资金流量,0,1,0),COLORBLUE;
+
+YB:=REF(资金流出,1)<0 AND 资金流入>30 AND C>O AND C>REF(C,1) AND C>MA(C,3),COLORBLUE,NODRAW;
+MO:IF(HSL*0.4<0,{GREEN}
+	IF(资金流量<0 AND 资金进出<0,
+		-2, {蓝绿同下}
+		IF(资金流量>0 AND 资金进出>0,
+			-1, {红绿同上}
+			IF(资金流量>0 AND 资金进出<0,
+				IF (ABS(资金流量)>ABS(资金进出),
+					-3,{红上绿下，红长绿短}
+					-4{红上绿下，红短绿长}
+				),
+			-10)
+		)
+	),
+	IF(资金流量>0 AND 资金进出>0,
+		2,{红黄同上}
+		IF(资金流量<0 AND 资金进出<0,
+			1,{蓝黄同下}
+			IF(资金流量<0 AND 资金进出>0,{黄上蓝下}
+				IF(ABS(资金流量)>=ABS(资金进出),
+					3,{蓝长黄短}
+					4 {蓝短黄长}
+				),
+			10)
+		)
+	));
+TMOD:=REFDATE(MO,TODAY);
+XMO:=MO+REF(MO,1)*10+REF(MO,2)*100;
+TXMO:=REFDATE(XMO,TODAY);
+JPTEXT:=IF(O=C,
+		 '一字板，指标失效',
+		 IF(TMOD=-2,
+		  '蓝绿同下：继续下跌可能性大。',
+		  IF(TMOD=-1,
+		    '红绿同上：连续上涨后的顶部。', {红绿同上}
+		    IF(TMOD=-3,
+			  '红上绿下，红长绿短：如果上涨过程中出现，短期震仓，逢低参与。',{红上绿下，红长绿短}
+			  IF(TMOD=-4,
+				'红上绿下，红短绿长：明日看跌。' ,{红上绿下，红短绿长}
+				IF(TMOD=2,
+				  '红黄同上：看涨。',{红黄同上}
+				  IF(TMOD=1,
+					'蓝黄同下：如果市场连续下跌后的底部，近期有反弹。',{蓝黄同下}
+					IF(TMOD=3,
+					  '黄上蓝下,蓝长黄短：下跌途中的诱多，不参与。',{蓝长黄短}
+					  IF(TMOD=4,
+					    '黄上蓝下,蓝短黄长：短期可能有变，连涨后下跌或连跌后上涨，短线参与。', {蓝短黄长}
+						'趋势不明')))))))));
+DRAWTEXT_FIX(1,0,1,0,JPTEXT),COLORMAGENTA;
+
+X:=(3*C+2*L+O+H)/7;
+多空线:=(20*X+19*REF(X,1)+18*REF(X,2)+17*REF(X,3)+16*REF(X,4)+15*REF(X,5)+14*REF(X,6)
++13*REF(X,7)+12*REF(X,8)+11*REF(X,9)+10*REF(X,10)+9*REF(X,11)+8*REF(X,12)
++7*REF(X,13)+6*REF(X,14)+5*REF(X,15)+4*REF(X,16)+3*REF(X,17)+2*REF(X,18)+
+REF(X,20))/210;
+长黄柱:=资金流入>300 AND CROSS(C,多空线);
+{DRAWTEXT(黄柱初出蓝,-3000,'★'),COLORFF00FF;
+DRAWTEXT(长黄柱 ,HSL*1.1 ,'★'),COLORRED;}
+POS:=REFDATE(HHV(MAX(资金流量,资金进出),100),DATE);
+DRAWICON(YB,-POS,24);
+DRAWICON(长黄柱 ,-POS,38);
+DRAWICON(XMO=TXMO,POS,37);
+
+{VAR11:=0.618/3;
+VAR12:=2*HIGH-LOW/3;
+VAR13:=IF(CLOSE>60,618,61.8)/3;
+顶:LOG(VAR11)*DMA(EMA(CLOSE,60),SUM(VOL,60)/CAPITAL)*EXP(VAR12)/POW(VAR13,6)/2,COLORLIMAGENTA,NODRAW;};
